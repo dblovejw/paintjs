@@ -19,6 +19,9 @@
 7. HTML에서 jsRange 가져오기
 8. range의 input 변경시 ctx로 range 변경해주기
 9. filling모드와 paint 모드 만들어주기 (7번 후 input을 변경)
+----------------------------------------------------
+<Filling mode>
+10. 색 click시 ctx에 색을 fillstyle로 저장하고 canvas 클릭시 fillrect로 canvas 칠해지도록 함.
 
 */
 
@@ -28,11 +31,14 @@ const colors = document.getElementsByClassName("jsColor");
 const range = document.getElementById("jsRange");
 const mode = document.getElementById("jsMode");
 
-//pixel modifier에 사이즈를 줘야지 paint가 시행됨
-canvas.width = 700;
-canvas.height = 700;
+const INITIAL_COLOR = "#2c2c2c";
+const CANVAS_SIZE = 700;
 
-ctx.strokeStyle = "#2c2c2c";
+canvas.width = CANVAS_SIZE;
+canvas.height = CANVAS_SIZE;
+
+ctx.strokeStyle = INITIAL_COLOR;
+ctx.fillStyle = INITIAL_COLOR;
 ctx.lineWidth = 2.5;
 
 let painting = false;
@@ -62,6 +68,7 @@ function handleColorClick(event){
     const color = event.target.style.backgroundColor;
     //**https://developer.mozilla.org/ko/docs/Web/API/Event/target#Example
     ctx.strokeStyle = color;
+    ctx.fillStyle = color;
 }
 
 function handleRangeChange(event){
@@ -79,12 +86,18 @@ function handleModeClick(){
     }
 }
 
+function handleCanvasClick(){
+    if(filling){
+        ctx.fillRect(0,0,CANVAS_SIZE,CANVAS_SIZE);
+    }
+}
 
 if (canvas) {
   canvas.addEventListener("mousemove", onMouseMove);
   canvas.addEventListener("mousedown", startPainting);
   canvas.addEventListener("mouseup", stopPainting);
   canvas.addEventListener("mouseleave", stopPainting);
+  canvas.addEventListener("click", handleCanvasClick);
 }
 
 Array.from(colors).forEach(color =>
