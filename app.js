@@ -8,7 +8,10 @@
 
 3. 눌렀을떄 paint 되도록 canvas의 context를 만들어 픽셀을 조작
     ** https://developer.mozilla.org/ko/docs/Web/API/CanvasRenderingContext2D
+
+4. 마우스를 움직일때 path를 생성하고 그 생성된 path중 painting = true일떄 선이 만들어지도록 시행
 */
+
 const canvas = document.getElementById("jsCanvas");
 const ctx = canvas.getContext("2d");
 
@@ -34,9 +37,9 @@ function onMouseMove(event) {
   const y = event.offsetY;
     if (!painting) {
         ctx.beginPath();
-        ctx.moveTo(x, y);
+        ctx.moveTo(x, y); //beginPath로 path를 만들면 마우스의 x,y좌표를 path로 준다.
     } else {
-        ctx.lineTo(x, y);
+        ctx.lineTo(x, y); //moveTo에서 lineTo까지 path를 만든다.
         ctx.stroke();
     }
 }
