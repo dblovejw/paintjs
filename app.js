@@ -10,10 +10,15 @@
     ** https://developer.mozilla.org/ko/docs/Web/API/CanvasRenderingContext2D
 
 4. 마우스를 움직일때 path를 생성하고 그 생성된 path중 painting = true일떄 선이 만들어지도록 시행
+---------------------------------------------------
+<change colors>
+5. HTML에서 jscolors 가져오기
+6. colors을 array로 만든 후 각 color를 클릭시 변경되도록 함
 */
 
 const canvas = document.getElementById("jsCanvas");
 const ctx = canvas.getContext("2d");
+const colors = document.getElementsByClassName("jsColor");
 
 //pixel modifier에 사이즈를 줘야지 paint가 시행됨
 canvas.width = 700;
@@ -44,9 +49,11 @@ function onMouseMove(event) {
     }
 }
 
-function onMouseDown(event) {
-  painting = true;
+function handleColorClick(event){
+    const color = event.target.style.backgroundColor;
+    ctx.strokeStyle = color;
 }
+
 
 if (canvas) {
   canvas.addEventListener("mousemove", onMouseMove);
@@ -54,3 +61,7 @@ if (canvas) {
   canvas.addEventListener("mouseup", stopPainting);
   canvas.addEventListener("mouseleave", stopPainting);
 }
+
+Array.from(colors).forEach(color =>
+    color.addEventListener("click", handleColorClick)
+  ); //color를 potato로 바꿔도 상관없다.
