@@ -22,7 +22,16 @@
 ----------------------------------------------------
 <Filling mode>
 10. 색 click시 ctx에 색을 fillstyle로 저장하고 canvas 클릭시 fillrect로 canvas 칠해지도록 함.
-
+----------------------------------------------------
+<save image>
+11. 사진 저장시 투명해짐 -> html에서만 white로 저장되었기 때문에 canvas 자체를 하얀색으로 해줘야함
+    --> ctx.fillstyle & ctx.fillRect 사용. 
+12. 우클릭으로 사진저장 방지
+    --> contextMenu (우클릭 event)사용한 다음 preventDefault 사용
+13. save버튼 누를시 사진 저장
+    --> 1) canvas에 있는 image를 URL로 변환 -> canvas.toDataURL
+            ** https://developer.mozilla.org/ko/docs/Web/API/HTMLCanvasElement/toDataURL
+        2) 앵커(a)에 href & download를 이용해 넣은다음 이를 클릭해 실행하도록 함
 */
 
 const canvas = document.getElementById("jsCanvas");
@@ -30,6 +39,7 @@ const ctx = canvas.getContext("2d");
 const colors = document.getElementsByClassName("jsColor");
 const range = document.getElementById("jsRange");
 const mode = document.getElementById("jsMode");
+const saveBtn = document.getElementById("jsSave");
 
 const INITIAL_COLOR = "#2c2c2c";
 const CANVAS_SIZE = 700;
@@ -37,6 +47,8 @@ const CANVAS_SIZE = 700;
 canvas.width = CANVAS_SIZE;
 canvas.height = CANVAS_SIZE;
 
+ctx.fillStyle = "white";
+ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE); //처음 canvas 화면을 하얀색으로 해주기 위해 --> 이거 안하면 사진 저장시 투명색으로 나옴
 ctx.strokeStyle = INITIAL_COLOR;
 ctx.fillStyle = INITIAL_COLOR;
 ctx.lineWidth = 2.5;
@@ -92,12 +104,25 @@ function handleCanvasClick(){
     }
 }
 
+function handleCM(event){
+    event.preventDefault();
+}
+
+function handleSaveClick() {
+    const image = canvas.toDataURL();
+    const link = document.createElement("a");
+    link.href = image;
+    link.download = "PaintJS[🎨]";
+    link.click();
+  }
+
 if (canvas) {
   canvas.addEventListener("mousemove", onMouseMove);
   canvas.addEventListener("mousedown", startPainting);
   canvas.addEventListener("mouseup", stopPainting);
   canvas.addEventListener("mouseleave", stopPainting);
   canvas.addEventListener("click", handleCanvasClick);
+  canvas.addEventListener("contextmenu",handleCM);
 }
 
 Array.from(colors).forEach(color =>
@@ -109,5 +134,9 @@ if(range) {
 }
 
 if(mode) {
-    mode.addEventListener("click", handleModeClick)
+    mode.addEventListener("click", handleModeClick);
 }
+
+if (saveBtn) {
+    saveBtn.addEventListener("click", handleSaveClick);
+  }
